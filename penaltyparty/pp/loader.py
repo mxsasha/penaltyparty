@@ -1,4 +1,5 @@
 # Loading from Goose's CSV, enhanced with correct answer in K
+import sys
 
 import django
 import openpyxl
@@ -8,7 +9,7 @@ django.setup()
 from penaltyparty.pp.models import Answer, Question  # noqa: E402
 
 # Load the workbook and the first sheet
-workbook = openpyxl.load_workbook("/Users/sasha/rules.xlsx")
+workbook = openpyxl.load_workbook(sys.argv[1])
 sheet = workbook.active
 
 

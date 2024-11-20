@@ -20,8 +20,11 @@ TEST_GROUP_QUESTION_AMOUNT = 40
 
 def index(request):
     pks = Question.objects.values_list("pk", flat=True)
-    random_pk = random.choice(pks)
-    random_question = Question.objects.get(pk=random_pk)
+    if pks:
+        random_pk = random.choice(pks)
+        random_question = Question.objects.get(pk=random_pk)
+    else:
+        random_question = None
     return render(request, template_name="index.html", context={"random_question": random_question})
 
 

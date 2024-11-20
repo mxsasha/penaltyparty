@@ -15,6 +15,7 @@ openpyxl = "^3.1.5"
 django-honeypot = "^1.2.1"
 whitenoise = "^6.8.2"
 gunicorn = "^23.0.0"
+psycopg2-binary = "^2.9.10"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.252"

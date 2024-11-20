@@ -10,8 +10,8 @@ class Question(TimeStampedModel):
     STATUS = Choices("active", "inactive")
     question_text = models.TextField(unique=True)
     status = StatusField()
-    rule_section = models.CharField(max_length=15, null=True, blank=True)
-    rule_scenario = models.CharField(max_length=15, null=True, blank=True)
+    rule_section = models.CharField(max_length=250, null=True, blank=True)
+    rule_scenario = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return self.question_text
