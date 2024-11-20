@@ -1,0 +1,11 @@
+@media (prefers-color-scheme: dark) {
+
+    img.invertible {
+        filter: invert(1);
+    }
+
+}
+
+nav img {
+    height: 4em;
+}

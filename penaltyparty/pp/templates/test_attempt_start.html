@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h1>Start the rules test</h1>
+    <p>You're about to start the rules test in the group "{{ test_group }}".</p>
+    {% if test_group.info_for_test_takers %}
+        The person inviting you said:
+        <article>
+            {{ test_group.info_for_test_takers }}
+        </article>
+    {% endif %}
+    {% if form.errors %}
+        <div>
+            {% for k, error in form.errors.items %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% include 'form.html' with submit_label="Start test" %}
+
+
+{% endblock %}

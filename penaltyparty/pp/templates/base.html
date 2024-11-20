@@ -1,0 +1,34 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="{% static "css/pico/pico.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/pp.css" %}">
+    <title>Penalty Party</title>
+
+</head>
+<body>
+<main class="container">
+    {% block container %}
+        <nav>
+            <ul>
+                <li><img alt="Penalty Party: roller derby rules test" class="invertible"
+                         src="{% static "logo-narrow.png" %}"/></li>
+            </ul>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li>|</li>
+                <li><a href="{% url "test_group_create" %}">Start testing a new group</a></li>
+
+            </ul>
+        </nav>
+        {% block content %}
+        {% endblock %}
+    {% endblock %}
+</main>
+</body>
+</html>

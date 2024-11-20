@@ -1,0 +1,21 @@
+{% load honeypot %}
+
+<form method="POST" action=".">
+    {% csrf_token %}
+    {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+    {% render_honeypot_field %}
+    {% for field in form.visible_fields %}
+        {% if not field.hidden %}
+            <label for="{{ field.auto_id }}">
+                {{ field.label }}:
+                {{ field }}
+                {% if field.errors %}
+                    <small>{{ field.errors|join:", " }}</small>
+                {% endif %}
+                <small>{{ field.help_text }}</small>
+            </label>
+        {% endif %}
+    {% endfor %}
+    <hr/>
+    <button type="submit">{{ submit_label }}</button>
+</form>

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Your test is done!</h1>
+    <p>
+        You have scored {{ test_attempt.correct_percentage }}%, with {{ test_attempt.final_correct }}
+        correct out of {{ test_attempt.final_answered }}.
+    </p>
+
+    <h2>Incorrect answers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Your answer</th>
+            <th scope="col">Correct answer</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for answer in test_attempt.incorrect_answers %}
+            <tr>
+                <th scope="row">{{ answer.question }}</th>
+                <td>{{ answer.answer_text }}</td>
+                <td>{{ answer.question.correct_answer.answer_text }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Correct answers</h2>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Answer</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for answer in test_attempt.correct_answers %}
+            <tr>
+                <th scope="row">{{ answer.question }}</th>
+                <td>{{ answer.answer_text }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

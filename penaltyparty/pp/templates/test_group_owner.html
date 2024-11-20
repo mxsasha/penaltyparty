@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Test group: {{ test_group.group_name }}</h1>
+    <p>Share this URL with anyone that should take the test:</p>
+    <article>
+        {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
+    </article>
+    <hr/>
+    <p>Share this URL with anyone that should see participant's results:</p>
+    <article>
+        {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
+    </article>
+
+    <h2>Results</h2>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Score</th>
+            <th scope="col">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for attempt in test_group.completed_attempts %}
+            <tr>
+                <th scope="row">{{ attempt.participant_name }}</th>
+                <td>{{ attempt.correct_percentage }}% ({{ attempt.final_correct }} / {{ attempt.final_answered }})</td>
+                <td>{{ attempt.modified }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">Nobody has taken the test yet.</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <h2>Questions selected for your group</h2>
+    <ul>
+        {% for question in test_group.questions.all %}
+            <li>{{ question.question_text }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

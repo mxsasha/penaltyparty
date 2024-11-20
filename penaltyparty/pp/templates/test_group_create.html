@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h1>Start testing a new group</h1>
+    {% if form.errors %}
+        <div>
+            {% for k, error in form.errors.items %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% include 'form.html' with submit_label="Create my group" %}
+
+{% endblock %}

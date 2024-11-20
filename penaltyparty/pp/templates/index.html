@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <article>
+        <hgroup>
+            <h1>Run your rules testing for WFTDA Roller Derby.</h1>
+        </hgroup>
+    </article>
+    <div class="grid">
+        <div>
+            <article>
+                <h2>How does it work?</h2>
+                <ol>
+                    <li>Get <a href="{% url "test_group_create" %}">an invite link</a> for the group you want to test.
+                    </li>
+                    <li>You send the link to anyone you want to have take the test.</li>
+                    <li>Each test taker enters their name and runs through all the questions.</li>
+                    <li>
+                        Test takers see their result and any wrong answers immediately after completing.
+                    </li>
+                    <li>Using your group owner link, you see the scores of everyone who finished the test.</li>
+                </ol>
+                <p>
+                    When you make your group, we randomly pick 40 questions out of our total set of ~100.
+                    Everyone in one group gets the same questions, but in a different order with a different answer
+                    order.
+                </p>
+            </article>
+            <article>
+                <h2>Example question</h2>
+                <p>{{ random_question.question_text }}</p>
+            </article>
+        </div>
+        <div>
+            <article>
+                <h2>Questions</h2>
+                <dl>
+                    <dt><em>What if people cheat by learning all the answers?</em></dt>
+                    <dd>Sounds like they mostly know the rules then.</dd>
+                </dl>
+                <dl>
+                    <dt><em>Can I have custom questions? Other new features?</em></dt>
+                    <dd>
+                        This is an early start of a project I make in my free time,
+                        so maybe, at some point. Input is definitely
+                        welcome on
+                        <a href="https://github.com/mxsash/penaltyparty">GitHub</a>.
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><em>Is this WFTDA endorsed?</em></dt>
+                    <dd>
+                        No. If you think there are errors in the questions/answers, for now
+                        report them on <a href="https://github.com/mxsash/penaltyparty">GitHub</a>.
+                    </dd>
+                </dl>
+                <dl>
+                    <dt><em>Who wrote the current questions?</em></dt>
+                    <dd>
+                        All current questions were written by Goose Bumps of
+                        <a href="https://parliamentofpain.nl/">Parliament of Pain</a>.
+                    </dd>
+                </dl>
+                                <dl>
+                    <dt><em>How should I use this in my league?</em></dt>
+                    <dd>
+                        Rules testing is no longer required by WFTDA, so it's up to you.
+                        Some leagues require a minimum score to graduate as a rookie,
+                        some use it as an input for training, or for people to check
+                        their own understanding.
+                        Be mindful that some people have trouble with written questions
+                        but are great on track, and vice versa.
+                    </dd>
+                </dl>
+            </article>
+        </div>
+    </div>
+{% endblock %}
