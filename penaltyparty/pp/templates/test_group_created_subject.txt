@@ -1,0 +1,1 @@
+Your roller derby rules test group "{{ test_group.group_name }}" is ready

@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Test group: {{ test_group.group_name }}</h1>
+    <p>We've selected your questions, and you're ready to start testing your group!</p>
     <p>Share this URL with anyone that should take the test:</p>
     <article>
         {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}

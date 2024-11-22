@@ -8,6 +8,7 @@ hostname = os.getenv("HOSTNAME", "")
 ALLOWED_HOSTS = [hostname, "www." + hostname]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [f"https://{hostname}", f"https://www.{hostname}"]
 
 ADMINS = [("", "django@s42.re")]
 
@@ -17,7 +18,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_SUBJECT_PREFIX = os.getenv(f"[{hostname}]")
-EMAIL_TLS = True
+EMAIL_USE_TLS = True
 
 DATABASES = {
     "default": {

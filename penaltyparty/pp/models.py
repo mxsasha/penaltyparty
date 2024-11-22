@@ -39,7 +39,7 @@ class Answer(TimeStampedModel):
 class TestGroup(TimeStampedModel):
     token_owner = UrlsafeTokenField(editable=False, max_length=32, unique=True)
     token_test_taker = UrlsafeTokenField(editable=False, max_length=32, unique=True)
-    group_name = models.CharField(max_length=255, help_text="E.g. 'Rookies 2024' or 'ERD rules checkuo'")
+    group_name = models.CharField(max_length=255, help_text="E.g. 'Rookies 2024' or 'ERD rules checkup'")
     owner_email = models.EmailField(verbose_name="Your email")
     info_for_test_takers = models.TextField(
         verbose_name="Anything you want to share with people taking your test (optional)",

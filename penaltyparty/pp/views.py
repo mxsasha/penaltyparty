@@ -1,8 +1,11 @@
 import random
 
 from django import forms
+from django.conf import settings
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, FormView, RedirectView
@@ -39,6 +42,12 @@ class TestGroupCreateView(CreateView):
         random_pk = random.sample(list(pks), TEST_GROUP_QUESTION_AMOUNT)
         self.object = form.save()
         self.object.questions.set(Question.objects.filter(pk__in=random_pk))
+
+        mail_context = {"test_group": self.object, "request": self.request}
+        subject = render_to_string("test_group_created_subject.txt", mail_context).strip()
+        body = render_to_string("test_group_created_body.txt", mail_context)
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [self.object.owner_email])
+
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
