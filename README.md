@@ -1,9 +1,9 @@
-# [Penalty Party: roller derby rules testing](https://penaltyparty.com/)
+# [Penalty Party: roller derby rules testing](https://penaltyparty.eu/)
 
-![Penalty party logo](https://github.com/mxsasha/penaltyparty/blob/main/static/logo.png?raw=true)
+![Penalty party logo](https://github.com/mxsasha/penaltyparty/blob/main/penaltyparty/static/logo.png?raw=true)
 
 Penalty Party helps roller derby leagues to run testing for
-the WFTDA rules. It runs on https://penaltyparty.com/
+the WFTDA rules. It runs on https://penaltyparty.eu/
 
 ## Future ideas
 
