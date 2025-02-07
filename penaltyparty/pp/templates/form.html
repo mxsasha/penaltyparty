@@ -10,7 +10,9 @@
 <form method="POST" action=".">
     {% csrf_token %}
     {% for field in form.hidden_fields %}{{ field }}{% endfor %}
-    {% render_honeypot_field %}
+    <div class="phone-field">
+        {% render_honeypot_field %}
+    </div>
     {% for field in form.visible_fields %}
         {% if not field.hidden %}
             <label for="{{ field.auto_id }}">
