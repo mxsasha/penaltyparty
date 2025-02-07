@@ -1,6 +1,9 @@
 # pull official base image
 FROM python:3.12.7-alpine
 
+ARG GIT_HASH
+ENV GIT_HASH=${GIT_HASH}
+
 RUN pip install poetry
 
 # set work directory
