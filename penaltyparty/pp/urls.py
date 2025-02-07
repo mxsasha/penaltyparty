@@ -8,6 +8,7 @@ from .views import (
     TestGroupCreateView,
     TestGroupOwnerView,
     TestGroupTakeView,
+    TestGroupOwnerAttemptView,
 )
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path("test/take/<str:group_token>/", TestGroupTakeView.as_view(), name="test_group_take"),
     path("answer/<str:token>/", TestAttemptNextQuestionView.as_view(), name="test_attempt_next_question"),
     path("answer/<str:token>/done/", TestAttemptDoneView.as_view(), name="test_attempt_done"),
+    path("group/owner/answers/<str:token>/done/", TestGroupOwnerAttemptView.as_view(), name="test_group_owner_attempt"),
     path(
         "answer/<str:token>/<str:question>/",
         TestAttemptEnterAnswerView.as_view(),

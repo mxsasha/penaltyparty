@@ -8,7 +8,7 @@
         {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
     </article>
     <hr/>
-    <p>Share this URL with anyone that should see participant's results:</p>
+    <p>Share this URL with anyone that should see participant's results (this page):</p>
     <article>
         {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
     </article>
@@ -25,13 +25,17 @@
         <tbody>
         {% for attempt in test_group.completed_attempts %}
             <tr>
-                <th scope="row">{{ attempt.participant_name }}</th>
+                <th scope="row">
+                    <a href="{% url 'test_group_owner_attempt' token=attempt.token %}">
+                        {{ attempt.participant_name }}
+                    </a>
+                </th>
                 <td>{{ attempt.correct_percentage }}% ({{ attempt.final_correct }} / {{ attempt.final_answered }})</td>
                 <td>{{ attempt.modified }}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="3">Nobody has taken the test yet.</td>
+                <td colspan="3">Nobody in your group has taken the test yet.</td>
             </tr>
         {% endfor %}
 

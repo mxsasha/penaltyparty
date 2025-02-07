@@ -105,6 +105,14 @@ class TestAttemptDoneView(DetailView):
     slug_field = "token"
 
 
+class TestGroupOwnerAttemptView(DetailView):
+    model = TestAttempt
+    template_name = "test_group_owner_attempt.html"
+    context_object_name = "test_attempt"
+    slug_url_kwarg = "token"
+    slug_field = "token"
+
+
 class AnswerForm(forms.Form):
     answer = forms.ChoiceField(widget=forms.RadioSelect, label="Your answer")
 

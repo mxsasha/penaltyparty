@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Your test is done!</h1>
+    <h1>Test results for {{ test_attempt.participant_name }} in group "{{ test_attempt.test_group.group_name }}"</h1>
     <p>
-        You have scored {{ test_attempt.correct_percentage }}%, with {{ test_attempt.final_correct }}
+        Scored {{ test_attempt.correct_percentage }}%, with {{ test_attempt.final_correct }}
         correct out of {{ test_attempt.final_answered }}.
-    </p>
-    <p>
-        <em>If you want to review this again later, just bookmark this current page.</em>
     </p>
 
     <h2>Incorrect answers</h2>
