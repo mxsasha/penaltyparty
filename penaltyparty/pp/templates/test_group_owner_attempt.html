@@ -19,7 +19,7 @@
         <tbody>
         {% for answer in test_attempt.incorrect_answers %}
             <tr>
-                <th scope="row">{{ answer.question }}</th>
+                <th scope="row">{{ answer.question }} <span class="question-id">(ID {{ answer.question.pk }})</span></th>
                 <td>{{ answer.answer_text }}</td>
                 <td>{{ answer.question.correct_answer.answer_text }}</td>
             </tr>
@@ -38,7 +38,7 @@
         <tbody>
         {% for answer in test_attempt.correct_answers %}
             <tr>
-                <th scope="row">{{ answer.question }}</th>
+                <th scope="row">{{ answer.question }} <span class="question-id">(ID {{ answer.question.pk }})</span></th>
                 <td>{{ answer.answer_text }}</td>
             </tr>
         {% endfor %}

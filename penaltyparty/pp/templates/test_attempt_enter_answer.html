@@ -12,5 +12,7 @@
         </div>
     {% endif %}
     {% include 'form.html' with submit_label="Submit answer" %}
-
+    <p class="question-id">
+        This is question ID {{ question.pk }}.
+    </p>
 {% endblock %}
