@@ -5,12 +5,12 @@
     <p>We've selected your questions, and you're ready to start testing your group!</p>
     <p>Share this URL with anyone that should take the test:</p>
     <article>
-        {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
+        https://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
     </article>
     <hr/>
     <p>Share this URL with anyone that should see participant's results (this page):</p>
     <article>
-        {{ request.scheme }}://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
+        https://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
     </article>
 
     <h2>Results</h2>
