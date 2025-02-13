@@ -4,11 +4,11 @@ You just created a test group called "{{ test_group.group_name }}" on Penalty Pa
 the roller derby rules test platform.
 
 You should share this URL with anyone that should take the test:
-{{ request.scheme }}://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
+https://{{ request.get_host }}{% url 'test_group_take' group_token=test_group.token_test_taker %}
 
 And here is where you can see all participant's results - share it only
 with people who should see those details:
-{{ request.scheme }}://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
+https://{{ request.get_host }}{% url 'test_group_owner' token=test_group.token_owner %}
 
 If you do not know what this is about, you may safely ignore this mail,
 or if it bothers you, reply and we'll make sure to never email you again.
