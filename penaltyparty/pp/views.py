@@ -38,7 +38,7 @@ class TestGroupCreateView(CreateView):
     template_name = "test_group_create.html"
 
     def form_valid(self, form):
-        pks = Question.objects.values_list("pk", flat=True)
+        pks = Question.active.values_list("pk", flat=True)
         random_pk = random.sample(list(pks), TEST_GROUP_QUESTION_AMOUNT)
         self.object = form.save()
         self.object.questions.set(Question.objects.filter(pk__in=random_pk))

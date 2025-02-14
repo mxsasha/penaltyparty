@@ -3,6 +3,7 @@
 *.iml
 out
 gen
+.vscode
 
 ### Python template
 # Byte-compiled / optimized / DLL files

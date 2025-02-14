@@ -3,6 +3,7 @@ import random
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField, UrlsafeTokenField
+from model_utils.managers import QueryManager
 from model_utils.models import TimeStampedModel
 
 
@@ -13,11 +14,14 @@ class Question(TimeStampedModel):
     rule_section = models.CharField(max_length=250, null=True, blank=True)
     rule_scenario = models.CharField(max_length=250, null=True, blank=True)
 
+    objects = models.Manager()
+    active = QueryManager(status=STATUS.active)
+
     def __str__(self):
         return self.question_text
 
     def answers_random(self):
-        answers = list(self.answer_set.all())
+        answers = list(self.answer_set.filter(status=Answer.STATUS.active))
         random.shuffle(answers)
         return answers
 
