@@ -148,7 +148,7 @@ class TestAttemptEnterAnswerView(FormView):
         answer = get_object_or_404(Answer, id=form.cleaned_data["answer"])
 
         # Create a new TestAttemptAnswer record
-        TestAttemptAnswer.objects.create(
+        TestAttemptAnswer.objects.update_or_create(
             attempt=self.test_attempt,
             answer=answer,
             question_text=answer.question.question_text,
