@@ -22,7 +22,9 @@ class Question(TimeStampedModel):
 
     def answers_random(self):
         answers = list(self.answer_set.filter(status=Answer.STATUS.active))
-        random.shuffle(answers)
+        # do not shuffle True or False answers
+        if "True" not in answers:
+            random.shuffle(answers)
         return answers
 
     def correct_answer(self):
@@ -78,6 +80,9 @@ class TestAttempt(TimeStampedModel):
         # Pick a random unanswered question
         return random.choice(remaining_questions)
 
+    def questions_answered(self):
+        return len(self.answers.all())
+    
     def set_final_score(self):
         self.final_answered = self.answers.count()
         self.final_correct = self.answers.filter(is_correct=True).count()

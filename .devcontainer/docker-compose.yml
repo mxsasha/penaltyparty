@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+      - /var/run/docker.sock:/var/run/docker-host.sock:rw
+    command: sleep infinity
+    environment:
+      - DEBUG=true
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    depends_on:
+      - dev_db
+
+  dev_db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    volumes:
+      - dev-psql-data:/tmp/dev/pgsql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+
+volumes:
+  dev-psql-data:
