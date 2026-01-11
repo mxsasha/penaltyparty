@@ -18,7 +18,7 @@ from penaltyparty.pp.models import (
     TestGroup,
 )
 
-TEST_GROUP_QUESTION_AMOUNT = 40
+TEST_GROUP_QUESTION_AMOUNT = getattr(settings, "TEST_GROUP_QUESTION_AMOUNT", 40)
 
 
 def index(request):
@@ -38,8 +38,9 @@ class TestGroupCreateView(CreateView):
     template_name = "test_group_create.html"
 
     def form_valid(self, form):
+        question_amount = getattr(settings, "TEST_GROUP_QUESTION_AMOUNT", TEST_GROUP_QUESTION_AMOUNT)
         pks = Question.active.values_list("pk", flat=True)
-        random_pk = random.sample(list(pks), TEST_GROUP_QUESTION_AMOUNT)
+        random_pk = random.sample(list(pks), question_amount)
         self.object = form.save()
         self.object.questions.set(Question.objects.filter(pk__in=random_pk))
 
@@ -147,7 +148,6 @@ class TestAttemptEnterAnswerView(FormView):
     def form_valid(self, form):
         answer = get_object_or_404(Answer, id=form.cleaned_data["answer"])
 
-        # Create a new TestAttemptAnswer record
         TestAttemptAnswer.objects.update_or_create(
             attempt=self.test_attempt,
             answer=answer,
