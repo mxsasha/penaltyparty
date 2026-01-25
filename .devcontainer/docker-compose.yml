@@ -6,6 +6,7 @@ services:
     volumes:
       - ../..:/workspaces:cached
       - /var/run/docker.sock:/var/run/docker-host.sock:rw
+      - ./media:/app/media
     command: sleep infinity
     environment:
       - DEBUG=true
@@ -26,6 +27,20 @@ services:
       - "5432"
     ports:
       - "5432:5432"
-
+    
+  manage:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    depends_on:
+      - dev_db
+    command: >
+      sh -c "
+        until pg_isready -h postgres -p 5432 -U dev; do sleep 1; done &&
+        python manage.py migrate &&
+        python manage.py loaddata fixtures/initial.json
+      "
 volumes:
   dev-psql-data:

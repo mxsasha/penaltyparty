@@ -18,7 +18,7 @@ from penaltyparty.pp.models import (
     TestGroup,
 )
 
-TEST_GROUP_QUESTION_AMOUNT = 40
+DEFAULT_TEST_GROUP_QUESTION_AMOUNT = 40
 
 
 def index(request):
@@ -34,13 +34,18 @@ def index(request):
 @method_decorator(check_honeypot, name="post")
 class TestGroupCreateView(CreateView):
     model = TestGroup
-    fields = ["group_name", "owner_email", "info_for_test_takers"]
+    fields = ["group_name", "owner_email", "info_for_test_takers", "questions_amount"]
     template_name = "test_group_create.html"
 
     def form_valid(self, form):
         pks = Question.active.values_list("pk", flat=True)
-        random_pk = random.sample(list(pks), TEST_GROUP_QUESTION_AMOUNT)
+
         self.object = form.save()
+        if self.object.questions_amount is not None:
+            questions_amt = self.object.questions_amount
+        else:
+            questions_amt = DEFAULT_TEST_GROUP_QUESTION_AMOUNT
+        random_pk = random.sample(list(pks), questions_amt)
         self.object.questions.set(Question.objects.filter(pk__in=random_pk))
 
         mail_context = {"test_group": self.object, "request": self.request}
@@ -126,10 +131,12 @@ class TestAttemptEnterAnswerView(FormView):
     template_name = "test_attempt_enter_answer.html"
     form_class = AnswerForm
     question = None
+    test_attempt = None
 
     def dispatch(self, request, *args, **kwargs):
         self.test_attempt = get_object_or_404(TestAttempt, token=self.kwargs.get("token"))
         self.question = get_object_or_404(Question, pk=self.kwargs.get("question"))
+
         if self.question in [answer.question for answer in self.test_attempt.answers.all()]:
             return HttpResponseRedirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
@@ -142,6 +149,7 @@ class TestAttemptEnterAnswerView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["question"] = self.question
+        context["test_attempt"] = self.test_attempt
         return context
 
     def form_valid(self, form):

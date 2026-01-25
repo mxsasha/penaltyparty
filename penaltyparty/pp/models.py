@@ -10,6 +10,8 @@ from model_utils.models import TimeStampedModel
 class Question(TimeStampedModel):
     STATUS = Choices("active", "inactive")
     question_text = models.TextField(unique=True)
+    question_image = models.ImageField(blank=True, null=True, upload_to="./uploads")
+
     status = StatusField()
     rule_section = models.CharField(max_length=250, null=True, blank=True)
     rule_scenario = models.CharField(max_length=250, null=True, blank=True)
@@ -19,13 +21,18 @@ class Question(TimeStampedModel):
 
     def __str__(self):
         return self.question_text
-
+    
     def answers_random(self):
         answers = list(self.answer_set.filter(status=Answer.STATUS.active))
         # do not shuffle True or False answers
-        if "True" not in answers:
+        if not self.is_boolean():
             random.shuffle(answers)
         return answers
+    
+    # utility question that determines whether question is true/false
+    def is_boolean(self):
+        answers = self.answer_set.filter(status=Answer.STATUS.active)
+        return "True" in list(self.answer_set.filter(status=Answer.STATUS.active)) and "False" in list(self.answer_set.filter(status=Answer.STATUS.active))
 
     def correct_answer(self):
         return self.answer_set.get(is_correct=True)
@@ -53,6 +60,7 @@ class TestGroup(TimeStampedModel):
         null=True,
         blank=True,
     )
+    questions_amount = models.BigIntegerField(verbose_name="How many questions would you like the test to have? (optional, will default to 40 if left blank)", null=True, blank=True)
     questions = models.ManyToManyField(Question)
 
     def __str__(self):
@@ -82,6 +90,9 @@ class TestAttempt(TimeStampedModel):
 
     def questions_answered(self):
         return len(self.answers.all())
+    
+    def total_questions(self):
+        return self.test_group.questions.count()
     
     def set_final_score(self):
         self.final_answered = self.answers.count()

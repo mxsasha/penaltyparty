@@ -4,6 +4,8 @@ SECRET_KEY = "django-insecure-xj9qpi$1i6y1bx)0s!36-iok(3gs3h80*g4g)^9_dp9d-)#_6=
 DEBUG = True
 ALLOWED_HOSTS = []
 
+ADMINS = [("", "django@s42.re")]
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "null@example.com"
 
