@@ -12,9 +12,6 @@ RUN apk add \
   --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
   postgresql18
 
-# set default password for postgres user
-RUN echo "password" > passwd postgres
-
 # set work directory
 WORKDIR /usr/src/app
 

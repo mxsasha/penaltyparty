@@ -21,6 +21,7 @@ services:
     volumes:
       - dev-psql-data:/tmp/dev/pgsql/data
     environment:
+      - POSTGRES_DB=
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
     expose:
@@ -38,7 +39,7 @@ services:
       - dev_db
     command: >
       sh -c "
-        until pg_isready -h postgres -p 5432 -U dev; do sleep 1; done &&
+        until pg_isready -h dev_db -p 5432 -U dev; do sleep 1; done &&
         python manage.py migrate &&
         python manage.py loaddata fixtures/initial.json
       "

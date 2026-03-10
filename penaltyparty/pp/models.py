@@ -29,11 +29,14 @@ class Question(TimeStampedModel):
             random.shuffle(answers)
         return answers
     
-    # utility question that determines whether question is true/false
+    # utility function that determines whether question is true/false
     def is_boolean(self):
-        answers = self.answer_set.filter(status=Answer.STATUS.active)
-        return "True" in list(self.answer_set.filter(status=Answer.STATUS.active)) and "False" in list(self.answer_set.filter(status=Answer.STATUS.active))
-
+        active_answer_texts = set(
+            self.answer_set.filter(status=Answer.STATUS.active)
+            .values_list("answer_text", flat=True)
+        )
+        return "True" in active_answer_texts and "False" in active_answer_texts
+    
     def correct_answer(self):
         return self.answer_set.get(is_correct=True)
 
@@ -60,7 +63,7 @@ class TestGroup(TimeStampedModel):
         null=True,
         blank=True,
     )
-    questions_amount = models.BigIntegerField(verbose_name="How many questions would you like the test to have? (optional, will default to 40 if left blank)", null=True, blank=True)
+    questions_amount = models.PositiveSmallIntegerField(verbose_name="How many questions would you like the test to have? (optional, will default to 40 if left blank)", null=True, blank=True)
     questions = models.ManyToManyField(Question)
 
     def __str__(self):
@@ -89,7 +92,7 @@ class TestAttempt(TimeStampedModel):
         return random.choice(remaining_questions)
 
     def questions_answered(self):
-        return len(self.answers.all())
+        return self.answers.count()
     
     def total_questions(self):
         return self.test_group.questions.count()
