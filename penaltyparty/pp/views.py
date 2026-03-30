@@ -18,9 +18,6 @@ from penaltyparty.pp.models import (
     TestGroup,
 )
 
-TEST_GROUP_QUESTION_AMOUNT = 40
-
-
 def index(request):
     pks = Question.objects.values_list("pk", flat=True)
     if pks:
@@ -34,15 +31,19 @@ def index(request):
 @method_decorator(check_honeypot, name="post")
 class TestGroupCreateView(CreateView):
     model = TestGroup
-    fields = ["group_name", "owner_email", "info_for_test_takers"]
+    fields = ["group_name", "owner_email", "info_for_test_takers", "questions_amount"]
     template_name = "test_group_create.html"
 
     def form_valid(self, form):
         pks = Question.active.values_list("pk", flat=True)
-        random_pk = random.sample(list(pks), TEST_GROUP_QUESTION_AMOUNT)
-        self.object = form.save()
-        self.object.questions.set(Question.objects.filter(pk__in=random_pk))
 
+        questions_amt = self.clean_questions_amount(form)
+
+        if form.errors:
+            return self.form_invalid(form)
+
+        if form.is_valid():
+            self.object = form.save()
         mail_context = {"test_group": self.object, "request": self.request}
         subject = render_to_string("test_group_created_subject.txt", mail_context).strip()
         body = render_to_string("test_group_created_body.txt", mail_context)
@@ -53,7 +54,12 @@ class TestGroupCreateView(CreateView):
     def get_success_url(self):
         return reverse("test_group_owner", kwargs={"token": self.object.token_owner})
 
-
+    def clean_questions_amount(self, form):
+        if form.cleaned_data["questions_amount"] and form.cleaned_data["questions_amount"] > settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT:
+            msg = f"Questions amount cannot exceed {settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT}."
+            form.add_error("questions_amount", msg)
+        return form.cleaned_data.get("questions_amount", settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT)
+    
 class TestGroupOwnerView(DetailView):
     model = TestGroup
     template_name = "test_group_owner.html"
@@ -126,10 +132,12 @@ class TestAttemptEnterAnswerView(FormView):
     template_name = "test_attempt_enter_answer.html"
     form_class = AnswerForm
     question = None
+    test_attempt = None
 
     def dispatch(self, request, *args, **kwargs):
         self.test_attempt = get_object_or_404(TestAttempt, token=self.kwargs.get("token"))
         self.question = get_object_or_404(Question, pk=self.kwargs.get("question"))
+
         if self.question in [answer.question for answer in self.test_attempt.answers.all()]:
             return HttpResponseRedirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
@@ -142,6 +150,7 @@ class TestAttemptEnterAnswerView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["question"] = self.question
+        context["test_attempt"] = self.test_attempt
         return context
 
     def form_valid(self, form):

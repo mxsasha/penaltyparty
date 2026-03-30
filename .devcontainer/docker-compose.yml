@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+      target: "development"
+    volumes:
+      - ../..:/workspaces:cached
+      - /var/run/docker.sock:/var/run/docker-host.sock:rw
+      - ./media:/app/media
+    command: sleep infinity
+    environment:
+      - DEBUG=true
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    depends_on:
+      - dev_db
+
+  dev_db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    volumes:
+      - dev-psql-data:/tmp/dev/pgsql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    
+  manage:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+      target: "development"
+    volumes:
+      - ../..:/workspaces:cached
+    depends_on:
+      - dev_db
+    command: >
+      sh -c "
+        until pg_isready -h dev_db -p 5432 -U dev; do sleep 1; done &&
+        python manage.py migrate &&
+        python manage.py loaddata fixtures/initial.json
+      "
+volumes:
+  dev-psql-data:

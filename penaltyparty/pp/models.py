@@ -1,6 +1,7 @@
 import random
 
 from django.db import models
+from django.conf import settings
 from model_utils import Choices
 from model_utils.fields import StatusField, UrlsafeTokenField
 from model_utils.managers import QueryManager
@@ -10,6 +11,8 @@ from model_utils.models import TimeStampedModel
 class Question(TimeStampedModel):
     STATUS = Choices("active", "inactive")
     question_text = models.TextField(unique=True)
+    question_image = models.ImageField(blank=True, null=True, upload_to="./uploads")
+
     status = StatusField()
     rule_section = models.CharField(max_length=250, null=True, blank=True)
     rule_scenario = models.CharField(max_length=250, null=True, blank=True)
@@ -19,12 +22,22 @@ class Question(TimeStampedModel):
 
     def __str__(self):
         return self.question_text
-
+    
     def answers_random(self):
         answers = list(self.answer_set.filter(status=Answer.STATUS.active))
-        random.shuffle(answers)
+        # do not shuffle True or False answers
+        if not self.is_boolean():
+            random.shuffle(answers)
         return answers
-
+    
+    # utility function that determines whether question is true/false
+    def is_boolean(self):
+        active_answer_texts = set(
+            self.answer_set.filter(status=Answer.STATUS.active)
+            .values_list("answer_text", flat=True)
+        )
+        return "True" in active_answer_texts and "False" in active_answer_texts
+    
     def correct_answer(self):
         return self.answer_set.get(is_correct=True)
 
@@ -51,6 +64,8 @@ class TestGroup(TimeStampedModel):
         null=True,
         blank=True,
     )
+    questions_amount = models.PositiveSmallIntegerField(verbose_name="How many questions would you like the test to have?", 
+                                                        default=settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT, null=False)
     questions = models.ManyToManyField(Question)
 
     def __str__(self):
@@ -78,6 +93,12 @@ class TestAttempt(TimeStampedModel):
         # Pick a random unanswered question
         return random.choice(remaining_questions)
 
+    def questions_answered(self):
+        return self.answers.count()
+    
+    def total_questions(self):
+        return self.test_group.questions.count()
+    
     def set_final_score(self):
         self.final_answered = self.answers.count()
         self.final_correct = self.answers.filter(is_correct=True).count()
