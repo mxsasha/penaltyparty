@@ -18,9 +18,6 @@ from penaltyparty.pp.models import (
     TestGroup,
 )
 
-DEFAULT_TEST_GROUP_QUESTION_AMOUNT = 40
-
-
 def index(request):
     pks = Question.objects.values_list("pk", flat=True)
     if pks:
@@ -40,14 +37,13 @@ class TestGroupCreateView(CreateView):
     def form_valid(self, form):
         pks = Question.active.values_list("pk", flat=True)
 
-        self.object = form.save()
-        if self.object.questions_amount is not None:
-            questions_amt = self.object.questions_amount
-        else:
-            questions_amt = DEFAULT_TEST_GROUP_QUESTION_AMOUNT
-        random_pk = random.sample(list(pks), questions_amt)
-        self.object.questions.set(Question.objects.filter(pk__in=random_pk))
+        questions_amt = self.clean_questions_amount(form)
 
+        if form.errors:
+            return self.form_invalid(form)
+
+        if form.is_valid():
+            self.object = form.save()
         mail_context = {"test_group": self.object, "request": self.request}
         subject = render_to_string("test_group_created_subject.txt", mail_context).strip()
         body = render_to_string("test_group_created_body.txt", mail_context)
@@ -58,7 +54,12 @@ class TestGroupCreateView(CreateView):
     def get_success_url(self):
         return reverse("test_group_owner", kwargs={"token": self.object.token_owner})
 
-
+    def clean_questions_amount(self, form):
+        if form.cleaned_data["questions_amount"] and form.cleaned_data["questions_amount"] > settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT:
+            msg = f"Questions amount cannot exceed {settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT}."
+            form.add_error("questions_amount", msg)
+        return form.cleaned_data.get("questions_amount", settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT)
+    
 class TestGroupOwnerView(DetailView):
     model = TestGroup
     template_name = "test_group_owner.html"

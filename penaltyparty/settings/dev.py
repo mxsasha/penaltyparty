@@ -20,3 +20,5 @@ DATABASES = {
         "CONN_MAX_AGE": None,
     }
 }
+
+DEFAULT_TEST_GROUP_QUESTION_AMOUNT = 3

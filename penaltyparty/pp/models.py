@@ -1,6 +1,7 @@
 import random
 
 from django.db import models
+from django.conf import settings
 from model_utils import Choices
 from model_utils.fields import StatusField, UrlsafeTokenField
 from model_utils.managers import QueryManager
@@ -63,7 +64,8 @@ class TestGroup(TimeStampedModel):
         null=True,
         blank=True,
     )
-    questions_amount = models.PositiveSmallIntegerField(verbose_name="How many questions would you like the test to have? (optional, will default to 40 if left blank)", null=True, blank=True)
+    questions_amount = models.PositiveSmallIntegerField(verbose_name="How many questions would you like the test to have?", 
+                                                        default=settings.DEFAULT_TEST_GROUP_QUESTION_AMOUNT, null=False)
     questions = models.ManyToManyField(Question)
 
     def __str__(self):
